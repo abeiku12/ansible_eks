@@ -1,0 +1,50 @@
+---
+- name: Create Prometheus namespace
+  community.kubernetes.k8s:
+    api_version: v1
+    kind: Namespace
+    name: "{{ prometheus_namespace }}"
+    state: present
+
+- name: Apply Prometheus manifest
+  community.kubernetes.k8s:
+    state: present
+    definition: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: prometheus
+        namespace: {{ prometheus_namespace }}
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: prometheus
+        template:
+          metadata:
+            labels:
+              app: prometheus
+          spec:
+            containers:
+            - name: prometheus
+              image: prom/prometheus:latest
+              ports:
+              - containerPort: 9090
+---
+- name: Expose Prometheus service
+  community.kubernetes.k8s:
+    state: present
+    definition: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: prometheus
+        namespace: {{ prometheus_namespace }}
+      spec:
+        selector:
+          app: prometheus
+        ports:
+        - protocol: TCP
+          port: 9090
+          targetPort: 9090
+        type: LoadBalancer
