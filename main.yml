@@ -1,0 +1,16 @@
+---
+- name: Create EKS cluster using eksctl
+  ansible.builtin.command:
+    cmd: eksctl create cluster -f /tmp/eks_cluster.yaml
+  args:
+    creates: /tmp/eks_cluster_created
+  register: eksctl_output
+
+- name: Save EKS cluster created file
+  ansible.builtin.file:
+    path: /tmp/eks_cluster_created
+    state: touch
+
+- name: Display EKS cluster output
+  debug:
+    msg: "{{ eksctl_output.stdout }}"
