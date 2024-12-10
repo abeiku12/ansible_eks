@@ -1,0 +1,11 @@
+ansible/
+├── aws_infra.yml
+├── roles/
+│   ├── eks/
+│   │   ├── tasks/
+│   │   │   ├── main.yml
+│   │   └── templates/
+│   │       └── eks_cluster.yaml.j2
+│   ├── prometheus/
+│   │   ├── tasks/
+│   │   │   └── main.yml
